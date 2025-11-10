@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PokeSync.Infrastructure.Data;
+using Scalar.AspNetCore;
 
 
 
@@ -11,8 +12,7 @@ builder.Services.AddDbContext<PokeSyncDbContext>(options =>
 
 // Controllers + minimal setup
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -40,8 +40,11 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi(); // /openapi/v1.json
+    app.MapScalarApiReference(options =>
+    {
+        options.Title = "PokeSync API";
+    });
 }
 
 app.MapControllers();
