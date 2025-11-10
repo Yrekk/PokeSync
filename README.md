@@ -2,21 +2,6 @@ PokéSync – Backend .NET 10 + EF Core + SQL Server
 
 🎮 PokéSync est une plateforme d’intégration de données Pokémon, développée avec .NET 10 (RC2), Entity Framework Core, et SQL Server LocalDB.Ce projet sert de vitrine technique (architecture propre, CI/CD, intégration API, documentation automatique).
 
- Architecture
-
- PokeSync/
- ├── src/
- │   ├── PokeSync.Api/               → API REST (.NET 10)
- │   ├── PokeSync.Domain/            → Entités et logique métier
- │   ├── PokeSync.Infrastructure/    → Accès aux données (EF Core, SQL Server)
- │   ├── PokeSync.Shared/            → Objets transverses / DTO / Helpers
- │   └── PokeSync.Tests/             → Tests unitaires et d’intégration
- ├── docs/                           → Documentation technique
- ├── .github/                        → CI/CD, templates PR/Issues
- ├── .gitignore
- ├── PokeSync.slnx
- └── README.md
-
  Installation & exécution locale
 
 1️⃣ Prérequis
