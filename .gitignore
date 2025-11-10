@@ -1,0 +1,83 @@
+# =========================
+#  Visual Studio & .NET
+# =========================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+[Tt]est[Rr]esult*/
+[Rr]elease/
+[Dd]ebug/
+x64/
+x86/
+*.dbmdl
+*.dbproj.schemaview
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+
+# EF Core
+Migrations/__EFMigrationsHistory/
+*.sqlite
+*.db
+*.mdf
+*.ldf
+
+# =========================
+#  Node / Frontend
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+coverage/
+.env
+.env.*
+
+# =========================
+#  System & IDE
+# =========================
+*.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+.idea/
+.vscode/
+*.iml
+
+# =========================
+#  Docker / Containers
+# =========================
+docker-compose.override.yml
+.env.docker
+*.pid
+*.seed
+*.bak
+*.log
+*.sql
+*.cache
+tmp/
+temp/
+
+# =========================
+#  Personal / Secrets
+# =========================
+appsettings.*.local.json
+appsettings.Development.json
+secrets.json
