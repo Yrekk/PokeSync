@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <File Path="Documentation" />
+    <Project Path="src/PokeSync.Api/PokeSync.Api.csproj" />
+    <Project Path="src/PokeSync.Domain/PokeSync.Domain.csproj" />
+    <Project Path="src/PokeSync.Infrastructure/PokeSync.Infrastructure.csproj" />
+    <Project Path="src/PokeSync.Shared/PokeSync.Shared.csproj" />
+    <Project Path="src/PokeSync.Tests/PokeSync.Tests.csproj" />
+  </Folder>
+</Solution>
