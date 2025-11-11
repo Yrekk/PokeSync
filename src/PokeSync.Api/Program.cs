@@ -1,4 +1,7 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using PokeSync.Api.Contracts.Upsert.Validation;
 using PokeSync.Api.Middleware;
 using PokeSync.Infrastructure.Data;
 using PokeSync.Infrastructure.Services;
@@ -37,6 +40,13 @@ builder.Services.AddScoped<IUpsertService, UpsertService>();
 
 // Controllers + minimal setup
 builder.Services.AddControllers();
+// FluentValidation auto-validation + scan de l’assembly API
+builder.Services
+    .AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters();
+
+builder.Services.AddValidatorsFromAssemblyContaining<PokemonUpsertItemDtoValidator>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
