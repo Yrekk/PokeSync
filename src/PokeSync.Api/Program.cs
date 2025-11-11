@@ -1,20 +1,56 @@
 using Microsoft.EntityFrameworkCore;
+using PokeSync.Api.Middleware;
 using PokeSync.Infrastructure.Data;
+using PokeSync.Infrastructure.Services;
 using Scalar.AspNetCore;
+using Serilog;
+using Serilog.Events;
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .WriteTo.Console(formatter: new Serilog.Formatting.Compact.CompactJsonFormatter())
+    .CreateLogger();
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Logger
+builder.Host.UseSerilog((ctx, services, cfg) =>
+{
+    cfg.ReadFrom.Configuration(ctx.Configuration)
+       .ReadFrom.Services(services)
+       .Enrich.FromLogContext()
+       .Enrich.WithMachineName()
+       .WriteTo.Console(formatter: new Serilog.Formatting.Compact.CompactJsonFormatter());
+});
+
 
 //DbContext
 builder.Services.AddDbContext<PokeSyncDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
+
+// Services
+builder.Services.AddScoped<IUpsertService, UpsertService>();
+
 // Controllers + minimal setup
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// 1) CorrelationId -> met le CorrelationId dans le LogContext (via BeginScope dans ton middleware)
+app.UseMiddleware<CorrelationIdMiddleware>();
+
+// 2) Serilog request logging (ajoute un log structuré pour chaque requête)
+app.UseSerilogRequestLogging();
+
+// 3) Token interne (après avoir posé CorrelationId, avant les endpoints)
+app.UseMiddleware<InternalTokenMiddleware>();
+
 
 // ---- AUTO-MIGRATION AT STARTUP ----
 // Automatically applies pending EF Core migrations at application startup.
