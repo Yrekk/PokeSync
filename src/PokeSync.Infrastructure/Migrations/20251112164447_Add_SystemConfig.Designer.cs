@@ -12,8 +12,8 @@ using PokeSync.Infrastructure.Data;
 namespace PokeSync.Infrastructure.Migrations
 {
     [DbContext(typeof(PokeSyncDbContext))]
-    [Migration("20251110123859_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251112164447_Add_SystemConfig")]
+    partial class Add_SystemConfig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,32 +68,6 @@ namespace PokeSync.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Generation", (string)null);
-                });
-
-            modelBuilder.Entity("PokeSync.Domain.Entities.IdempotencyKey", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ExternalKey")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedUtc");
-
-                    b.HasIndex("ExternalKey")
-                        .IsUnique();
-
-                    b.ToTable("IdempotencyKey", (string)null);
                 });
 
             modelBuilder.Entity("PokeSync.Domain.Entities.Pokemon", b =>
@@ -214,6 +188,66 @@ namespace PokeSync.Infrastructure.Migrations
                     b.HasIndex("TypeId");
 
                     b.ToTable("PokemonType", (string)null);
+                });
+
+            modelBuilder.Entity("PokeSync.Infrastructure.Data.Entities.IdempotencyKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExternalKey")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("PayloadHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("ResponseBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedUtc");
+
+                    b.HasIndex("ExternalKey")
+                        .IsUnique();
+
+                    b.ToTable("IdempotencyKey", (string)null);
+                });
+
+            modelBuilder.Entity("SystemConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("BootstrapInProgress")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LastSyncUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemConfig", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BootstrapInProgress = false
+                        });
                 });
 
             modelBuilder.Entity("PokeSync.Domain.Entities.Pokemon", b =>

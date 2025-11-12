@@ -4,14 +4,21 @@ using PokeSync.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Net.NetworkInformation;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PokeSync.Infrastructure.Services
 {
     public sealed class UpsertService : IUpsertService
     {
         private readonly PokeSyncDbContext _db;
-        public UpsertService(PokeSyncDbContext db) => _db = db;
+        private readonly IStatusService _status;
+        public UpsertService(PokeSyncDbContext db, IStatusService status)
+        {
+            _db = db;
+            _status = status;
+        }
 
         public async Task<(int inserted, int skipped)> UpsertAsync<TEntity, TDto, TKey>(
             IEnumerable<TDto> dtos,
@@ -55,6 +62,12 @@ namespace PokeSync.Infrastructure.Services
                 await _db.SaveChangesAsync(ct);
                 var inserted = toInsert.Count;
                 var skipped = incomingKeys.Count - inserted;
+                if(inserted > 0)
+                {
+                    
+                    await _status.MarkSyncNowAsync(ct);
+                    
+                }
                 return (inserted, skipped);
             }
             catch (DbUpdateException)

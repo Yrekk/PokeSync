@@ -11,7 +11,12 @@ namespace PokeSync.Infrastructure.Services
     public sealed class PokemonUpsertService : IPokemonUpsertService
     {
         private readonly PokeSyncDbContext _db;
-        public PokemonUpsertService(PokeSyncDbContext db) => _db = db;
+        private readonly IStatusService _status;
+        public PokemonUpsertService(PokeSyncDbContext db, IStatusService status)
+        {
+            _db = db;
+            _status = status;
+        }
 
         static string ExtIdStr(int extId) => extId.ToString(CultureInfo.InvariantCulture);
         static string Nz(string? s) => s ?? string.Empty;
@@ -200,6 +205,11 @@ namespace PokeSync.Infrastructure.Services
             }
 
             sw.Stop();
+            //HOOK readiness
+            if ((inserted + updated) > 0)
+            {
+                await _status.MarkSyncNowAsync(ct);
+            }
             return new UpsertBatchResult
             {
                 Items = results,

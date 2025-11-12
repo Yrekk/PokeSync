@@ -37,6 +37,9 @@ builder.Services.AddDbContext<PokeSyncDbContext>(options =>
 
 
 // Services
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<ISystemConfigRepository, SystemConfigRepository>();
+builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IUpsertService, UpsertService>();
 builder.Services.AddScoped<IPokemonUpsertService, PokemonUpsertService>();
 builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();

@@ -221,6 +221,32 @@ namespace PokeSync.Infrastructure.Migrations
                     b.ToTable("IdempotencyKey", (string)null);
                 });
 
+            modelBuilder.Entity("SystemConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("BootstrapInProgress")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LastSyncUtc")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemConfig", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BootstrapInProgress = false
+                        });
+                });
+
             modelBuilder.Entity("PokeSync.Domain.Entities.Pokemon", b =>
                 {
                     b.HasOne("PokeSync.Domain.Entities.Generation", "Generation")
