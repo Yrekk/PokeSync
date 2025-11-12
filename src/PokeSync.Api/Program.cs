@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PokeSync.Api.Contracts.Upsert.Validation;
 using PokeSync.Api.Middleware;
 using PokeSync.Infrastructure.Data;
+using PokeSync.Infrastructure.Interfaces;
 using PokeSync.Infrastructure.Services;
 using Scalar.AspNetCore;
 using Serilog;
@@ -37,6 +38,8 @@ builder.Services.AddDbContext<PokeSyncDbContext>(options =>
 
 // Services
 builder.Services.AddScoped<IUpsertService, UpsertService>();
+builder.Services.AddScoped<IPokemonUpsertService, PokemonUpsertService>();
+builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();
 
 // Controllers + minimal setup
 builder.Services.AddControllers();
@@ -60,6 +63,7 @@ app.UseSerilogRequestLogging();
 
 // 3) Token interne (après avoir posé CorrelationId, avant les endpoints)
 app.UseMiddleware<InternalTokenMiddleware>();
+app.UseMiddleware<IdempotencyMiddleware>();
 
 
 // ---- AUTO-MIGRATION AT STARTUP ----

@@ -10,6 +10,7 @@ public sealed class PokemonUpsertItemDtoValidator : AbstractValidator<PokemonUps
 
     public PokemonUpsertItemDtoValidator()
     {
+        RuleLevelCascadeMode = CascadeMode.Stop;
         RuleFor(x => x.ExternalId)
             .GreaterThan(0).WithMessage("ExternalId must be positive.");
 
@@ -24,8 +25,7 @@ public sealed class PokemonUpsertItemDtoValidator : AbstractValidator<PokemonUps
             .GreaterThan(0).WithMessage("GenerationNumber must be positive.");
 
         RuleFor(x => x.Types)
-            .NotNull().WithMessage("Types are required.")
-            .Must(t => t.Count > 0).WithMessage("At least one type is required.");
+            .NotEmpty().WithMessage("Types are required.");
 
         RuleForEach(x => x.Types)
             .NotEmpty().WithMessage("Type name is required.")

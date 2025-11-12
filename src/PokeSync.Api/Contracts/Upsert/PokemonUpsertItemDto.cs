@@ -6,8 +6,8 @@
         string Name,
         int GenerationNumber,
         string? SpriteUrl,
-        int? Height,
-        int? Weight,
+        decimal? Height,
+        decimal? Weight,
         IReadOnlyList<string> Types,
         IReadOnlyList<PokemonStatDto>? Stats,
         IReadOnlyList<PokemonFlavorDto>? Flavors
