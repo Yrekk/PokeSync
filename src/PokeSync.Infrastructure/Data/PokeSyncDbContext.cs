@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PokeSync.Domain.Entities;
 using Microsoft.Identity.Client;
+using PokeSync.Domain.Entities;
+using PokeSync.Infrastructure.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,9 @@ namespace PokeSync.Infrastructure.Data
         public DbSet<PokemonType> PokemonTypes => Set<PokemonType>();
         public DbSet<PokemonStat> PokemonStats => Set<PokemonStat>();
         public DbSet<PokemonFlavor> PokemonFlavors => Set<PokemonFlavor>();
-        public DbSet<IdempotencyKey> idempotencyKeys => Set<IdempotencyKey>();
+        public DbSet<IdempotencyKey> IdempotencyKeys => Set<IdempotencyKey>();
+   
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -153,6 +156,8 @@ namespace PokeSync.Infrastructure.Data
                     .HasMaxLength(128);
 
                 e.Property(x => x.CreatedUtc)
+                    .IsRequired();
+                e.Property(x => x.PayloadHash).HasMaxLength(64)
                     .IsRequired();
 
                 e.HasIndex(x => x.ExternalKey).IsUnique();   // une clé, un traitement

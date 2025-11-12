@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PokeSync.Infrastructure.Data;
+using PokeSync.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -7,24 +8,9 @@ using System.Text;
 
 namespace PokeSync.Infrastructure.Services
 {
-    public interface IUpsertService
-    {
-
-        Task<(int inserted, int skipped)> UpsertAsync<TEntity, TDto, Tkey>(
-                                                                         IEnumerable<TDto> dtos,
-                                                                         Expression<Func<TEntity, Tkey>> entityKeySelector,
-                                                                         Func<TDto, Tkey> dtoKeySelector,
-                                                                         Func<TDto, TEntity> mapNew,
-                                                                         IEqualityComparer<Tkey>? keyComparer = null,
-                                                                         CancellationToken ct = default)
-                                                                          where TEntity : class;
-                                                                                   
-    }
-
     public sealed class UpsertService : IUpsertService
     {
         private readonly PokeSyncDbContext _db;
-
         public UpsertService(PokeSyncDbContext db) => _db = db;
 
         public async Task<(int inserted, int skipped)> UpsertAsync<TEntity, TDto, TKey>(
@@ -38,38 +24,46 @@ namespace PokeSync.Infrastructure.Services
         {
             keyComparer ??= EqualityComparer<TKey>.Default;
 
-            // 1) Distinct sur les clés entrantes
+            // 1) Prépare les clés entrantes (distinct côté mémoire)
             var incoming = dtos.ToList();
-            var incomingKeys = incoming
-                .Select(dtoKeySelector)
-                .Distinct(keyComparer)
-                .ToList();
-
-            if (!incomingKeys.Any())
+            var incomingKeys = incoming.Select(dtoKeySelector).Distinct(keyComparer).ToList();
+            if (incomingKeys.Count == 0)
                 return (0, 0);
 
-            // 2) Charger les clés existantes en base
+            // 2) Charge SEULEMENT les clés existantes qui nous intéressent
+            //    => Select(key) .Where(incoming.Contains(key)) pour laisser le filtrage au SQL
             var existingKeys = await _db.Set<TEntity>()
+                .AsNoTracking()
                 .Select(entityKeySelector)
+                .Where(k => incomingKeys.Contains(k)) // filtrage côté DB
                 .ToListAsync(ct);
 
             var existingSet = new HashSet<TKey>(existingKeys, keyComparer);
 
-            // 3) Sélectionner les nouveaux à insérer
+            // 3) Mappe uniquement les nouveaux
             var toInsert = incoming
                 .Where(d => !existingSet.Contains(dtoKeySelector(d)))
                 .Select(mapNew)
                 .ToList();
 
-            if (toInsert.Count > 0)
+            if (toInsert.Count == 0)
+                return (0, incomingKeys.Count);
+
+            try
             {
                 await _db.Set<TEntity>().AddRangeAsync(toInsert, ct);
                 await _db.SaveChangesAsync(ct);
+                var inserted = toInsert.Count;
+                var skipped = incomingKeys.Count - inserted;
+                return (inserted, skipped);
             }
-
-            var inserted = toInsert.Count;
-            var skipped = incomingKeys.Count - inserted;
-            return (inserted, skipped);
+            catch (DbUpdateException)
+            {
+                // En cas de course (unique constraint), on peut recomptabiliser comme "skip"
+                // ou relire pour savoir exactement. Ici, on considère que tout ce qui a échoué
+                // sur contrainte unique est "skip".
+                return (0, incomingKeys.Count);
+            }
         }
     }
 }
