@@ -1,7 +1,5 @@
 ﻿using System.Net;
 
-namespace PokeSync.Api.Middleware;
-
 public sealed class InternalTokenMiddleware
 {
     private readonly RequestDelegate _next;
@@ -12,12 +10,12 @@ public sealed class InternalTokenMiddleware
     public InternalTokenMiddleware(RequestDelegate next, IConfiguration cfg)
     {
         _next = next;
-        _expected = cfg["InternalApi:Token"] ?? string.Empty;
+
+        _expected = cfg["Security:InternalToken"] ?? string.Empty;
     }
 
     public async Task Invoke(HttpContext context)
     {
-        // N’applique la vérif que sur /internal
         if (context.Request.Path.StartsWithSegments("/internal", StringComparison.OrdinalIgnoreCase))
         {
             if (!_expected.HasValue())
@@ -40,4 +38,7 @@ public sealed class InternalTokenMiddleware
     }
 }
 
-file static class StringExt { public static bool HasValue(this string s) => !string.IsNullOrWhiteSpace(s); }
+file static class StringExt
+{
+    public static bool HasValue(this string s) => !string.IsNullOrWhiteSpace(s);
+}

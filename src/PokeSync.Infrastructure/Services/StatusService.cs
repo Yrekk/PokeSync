@@ -6,6 +6,7 @@ using PokeSync.Domain.Entities;
 using PokeSync.Infrastructure.Data;
 using PokeSync.Infrastructure.Interfaces;
 using System;
+using ElementType = PokeSync.Domain.Entities.ElementType;
 
 public sealed class StatusService : IStatusService
 {
@@ -25,7 +26,7 @@ public sealed class StatusService : IStatusService
             return cached;
 
         // Règle métier: base vide si aucun Type ET aucune Generation
-        var hasTypes = await _db.Set<Type>().AsNoTracking().AnyAsync(ct);
+        var hasTypes = await _db.Set<ElementType>().AsNoTracking().AnyAsync(ct);
         var hasGenerations = await _db.Set<Generation>().AsNoTracking().AnyAsync(ct);
         var cfg = await _repo.GetAsync(ct);
 
