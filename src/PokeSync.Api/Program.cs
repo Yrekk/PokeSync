@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PokeSync.Api.Contracts.Upsert.Validation;
 using PokeSync.Api.HostedServices;
 using PokeSync.Api.Middleware;
+using PokeSync.Api.Options;
 using PokeSync.Infrastructure.Data;
 using PokeSync.Infrastructure.Interfaces;
 using PokeSync.Infrastructure.Services;
@@ -39,11 +40,29 @@ builder.Services.AddDbContext<PokeSyncDbContext>(options =>
 
 // Services
 builder.Services.AddMemoryCache();
+builder.Services.Configure<SecurityOptions>(
+    builder.Configuration.GetSection(SecurityOptions.SectionName));
+
+var securitySection = builder.Configuration.GetSection(SecurityOptions.SectionName);
+var securityOptions = securitySection.Get<SecurityOptions>() ?? new SecurityOptions();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy
+            .WithOrigins(securityOptions.AllowedOrigins)      // Dev + Prod
+            .WithMethods("GET", "POST", "OPTIONS")           // ce qui est prévu par l’US
+            .WithHeaders("Content-Type", "Accept");          // pas de headers exotiques
+        // Pas de AllowCredentials() => pas de cookies cross-site, plus safe
+    });
+});
 builder.Services.AddScoped<ISystemConfigRepository, SystemConfigRepository>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IUpsertService, UpsertService>();
 builder.Services.AddScoped<IPokemonUpsertService, PokemonUpsertService>();
 builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();
+builder.Services.AddHostedService<ConfigurationValidatorHostedService>();
 builder.Services.AddHostedService<BootstrapService>();
 builder.Services.AddHostedService<NightlySyncService>();
 
@@ -60,6 +79,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
+app.UseCors("Frontend");            // CORS pour Angular
 
 // 1) CorrelationId -> met le CorrelationId dans le LogContext (via BeginScope dans ton middleware)
 app.UseMiddleware<CorrelationIdMiddleware>();
