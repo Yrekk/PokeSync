@@ -168,11 +168,15 @@ namespace PokeSync.Infrastructure.Data
             {
                 e.ToTable("SystemConfig");
                 e.HasKey(x => x.Id);
-                e.Property(x => x.LastSyncUtc).HasColumnType("datetimeoffset");
-                e.Property(x => x.BootstrapInProgress).IsRequired();
 
-                // Seed la ligne singleton
-                e.HasData(new SystemConfig { Id = 1, BootstrapInProgress = false });
+                e.Property(x => x.State).IsRequired().HasMaxLength(16);
+                e.Property(x => x.LastSyncUtc).HasColumnType("datetimeoffset");
+                e.Property(x => x.LastSyncError).HasMaxLength(2000);
+                e.Property(x => x.UpdatedAtUtc).HasColumnType("datetimeoffset")
+                                               .HasDefaultValueSql("SYSUTCDATETIME()");
+                e.Property(x => x.RowVersion).IsRowVersion(); // <— token de concurrence
+
+                e.HasData(new SystemConfig { Id = 1, State = "initializing", SyncInProgress = false, BootstrapInProgress = false });
             });
         }
 

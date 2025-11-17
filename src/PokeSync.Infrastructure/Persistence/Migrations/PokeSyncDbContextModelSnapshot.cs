@@ -8,7 +8,7 @@ using PokeSync.Infrastructure.Data;
 
 #nullable disable
 
-namespace PokeSync.Infrastructure.Migrations
+namespace PokeSync.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PokeSyncDbContext))]
     partial class PokeSyncDbContextModelSnapshot : ModelSnapshot
@@ -232,8 +232,31 @@ namespace PokeSync.Infrastructure.Migrations
                     b.Property<bool>("BootstrapInProgress")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LastSyncError")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
                     b.Property<DateTimeOffset?>("LastSyncUtc")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<bool>("SyncInProgress")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasDefaultValueSql("SYSUTCDATETIME()");
 
                     b.HasKey("Id");
 
@@ -243,7 +266,11 @@ namespace PokeSync.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            BootstrapInProgress = false
+                            BootstrapInProgress = false,
+                            RowVersion = new byte[0],
+                            State = "initializing",
+                            SyncInProgress = false,
+                            UpdatedAtUtc = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
 
