@@ -1,4 +1,6 @@
-﻿public sealed class SystemConfig
+﻿namespace PokeSync.Infrastructure.Data.Entities;
+
+public sealed class SystemConfig
 {
     public int Id { get; set; } = 1;
     public string State { get; set; } = "initializing"; // "initializing" | "ready" | "degraded"
