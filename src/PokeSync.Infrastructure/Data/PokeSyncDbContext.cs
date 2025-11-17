@@ -163,7 +163,21 @@ namespace PokeSync.Infrastructure.Data
                 e.HasIndex(x => x.ExternalKey).IsUnique();   // une clé, un traitement
                 e.HasIndex(x => x.CreatedUtc);               // purge/TTL facile
             });
+            // ---- SystemConfig
+            modelBuilder.Entity<SystemConfig>(e =>
+            {
+                e.ToTable("SystemConfig");
+                e.HasKey(x => x.Id);
+                e.Property(x => x.LastSyncUtc).HasColumnType("datetimeoffset");
+                e.Property(x => x.BootstrapInProgress).IsRequired();
+
+                // Seed la ligne singleton
+                e.HasData(new SystemConfig { Id = 1, BootstrapInProgress = false });
+            });
         }
 
+
+       
     }
+
 }
