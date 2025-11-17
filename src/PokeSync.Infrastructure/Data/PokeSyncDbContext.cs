@@ -18,6 +18,7 @@ namespace PokeSync.Infrastructure.Data
         public DbSet<PokemonStat> PokemonStats => Set<PokemonStat>();
         public DbSet<PokemonFlavor> PokemonFlavors => Set<PokemonFlavor>();
         public DbSet<IdempotencyKey> IdempotencyKeys => Set<IdempotencyKey>();
+        public DbSet<SystemConfig> SystemConfig => Set<SystemConfig>();
    
 
 
