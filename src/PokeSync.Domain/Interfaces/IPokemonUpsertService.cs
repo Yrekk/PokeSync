@@ -1,9 +1,5 @@
-﻿using PokeSync.Infrastructure.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PokeSync.Infrastructure.Interfaces
+﻿using PokeSync.Domain.Models;
+namespace PokeSync.Domain.Interfaces
 {
     public interface IPokemonUpsertService
     {

@@ -1,11 +1,9 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using PokeSync.Domain.Entities;
 using PokeSync.Infrastructure.Data;
-using PokeSync.Infrastructure.Interfaces;
-using System;
+using PokeSync.Domain.Interfaces;
 using ElementType = PokeSync.Domain.Entities.ElementType;
 
 public sealed class StatusService : IStatusService

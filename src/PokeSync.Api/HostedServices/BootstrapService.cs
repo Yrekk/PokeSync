@@ -1,12 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using PokeSync.Infrastructure.Data;
-using PokeSync.Infrastructure.Interfaces;
+using PokeSync.Domain.Interfaces;
 using PokeSync.Domain.Entities;
 
 namespace PokeSync.Api.HostedServices

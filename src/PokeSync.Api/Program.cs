@@ -6,7 +6,7 @@ using PokeSync.Api.HostedServices;
 using PokeSync.Api.Middleware;
 using PokeSync.Api.Options;
 using PokeSync.Infrastructure.Data;
-using PokeSync.Infrastructure.Interfaces;
+using PokeSync.Domain.Interfaces;
 using PokeSync.Infrastructure.Services;
 using Scalar.AspNetCore;
 using Serilog;

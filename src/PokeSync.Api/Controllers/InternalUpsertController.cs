@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PokeSync.Api.Contracts;
 using PokeSync.Api.Contracts.Upsert;
 using PokeSync.Domain.Entities;
 using PokeSync.Infrastructure.Data;
-using PokeSync.Infrastructure.Data.Models;
-using PokeSync.Infrastructure.Interfaces;
-using PokeSync.Infrastructure.Services;
+using PokeSync.Domain.Models;
+using PokeSync.Domain.Interfaces;
 
 namespace PokeSync.Api.Controllers;
 

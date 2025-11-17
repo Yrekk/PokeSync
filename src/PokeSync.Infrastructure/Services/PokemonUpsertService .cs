@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PokeSync.Domain.Entities;
 using PokeSync.Infrastructure.Data;
-using PokeSync.Infrastructure.Data.Models;
-using PokeSync.Infrastructure.Interfaces;
+using PokeSync.Domain.Models;
+using PokeSync.Domain.Interfaces;
 using System.Diagnostics;
 using System.Globalization;
 

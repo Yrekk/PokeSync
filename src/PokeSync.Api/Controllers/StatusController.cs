@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PokeSync.Infrastructure.Interfaces;
+using PokeSync.Domain.Interfaces;
 
 [ApiController]
 [Route("api/status")]

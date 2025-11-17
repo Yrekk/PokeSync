@@ -1,4 +1,4 @@
-﻿namespace PokeSync.Infrastructure.Data.Models;
+﻿namespace PokeSync.Domain.Models;
 
 public sealed class UpsertBatchResult
 {

@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PokeSync.Infrastructure.Data;
-using PokeSync.Infrastructure.Interfaces;
-using System;
-using System.Collections.Generic;
+using PokeSync.Domain.Interfaces;
 using System.Linq.Expressions;
-using System.Net.NetworkInformation;
-using System.Text;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PokeSync.Infrastructure.Services
 {

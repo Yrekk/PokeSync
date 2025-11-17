@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using PokeSync.Domain.Entities;
 using PokeSync.Infrastructure.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PokeSync.Infrastructure.Data
 {

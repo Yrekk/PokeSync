@@ -1,4 +1,4 @@
-﻿namespace PokeSync.Infrastructure.Interfaces
+﻿namespace PokeSync.Domain.Interfaces
 {
     public interface ISystemConfigRepository
     {

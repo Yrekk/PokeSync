@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace PokeSync.Infrastructure.Interfaces
+namespace PokeSync.Domain.Interfaces
 {
     public interface IUpsertService
     {

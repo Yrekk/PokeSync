@@ -1,9 +1,6 @@
 ﻿using PokeSync.Infrastructure.Data;
-using PokeSync.Infrastructure.Interfaces;
+using PokeSync.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PokeSync.Infrastructure.Services
 {

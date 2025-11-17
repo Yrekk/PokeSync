@@ -1,9 +1,5 @@
 ﻿using System.Diagnostics;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using PokeSync.Infrastructure.Interfaces;
+using PokeSync.Domain.Interfaces;
 
 namespace PokeSync.Api.HostedServices
 {
