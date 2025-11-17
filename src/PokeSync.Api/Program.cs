@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using PokeSync.Api.Contracts.Upsert.Validation;
+using PokeSync.Api.HostedServices;
 using PokeSync.Api.Middleware;
 using PokeSync.Infrastructure.Data;
 using PokeSync.Infrastructure.Interfaces;
@@ -43,6 +44,8 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IUpsertService, UpsertService>();
 builder.Services.AddScoped<IPokemonUpsertService, PokemonUpsertService>();
 builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();
+builder.Services.AddHostedService<BootstrapService>();
+builder.Services.AddHostedService<NightlySyncService>();
 
 // Controllers + minimal setup
 builder.Services.AddControllers();
